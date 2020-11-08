@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Погода</string>
+    <string name="weather">Погода</string>
+    <string name="country">Город</string>
+
+    <string name="blank_fragment_city">Города</string>
+    <string name="blank_fragment_weather">Погода</string>
+    <string name="add_city">Добавить город</string>
+    <string name="description">Описание</string>
+    <string name="visibility">Видимость</string>
+    <string name="temp">Температура</string>
+    <string name="wind">Ветер</string>
+    <string name="fact_temp">Фактическая:</string>
+    <string name="feels_like">Ощущается как:</string>
+    <string name="temp_min">Минимальная:</string>
+    <string name="temp_max">Максимальная:</string>
+    <string name="pressure">Давление:</string>
+    <string name="humidity">Влажность:</string>
+    <string name="speed">Скорость:</string>
+    <string name="deg">Градус:</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
