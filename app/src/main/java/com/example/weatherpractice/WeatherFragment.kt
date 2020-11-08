@@ -9,9 +9,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.beust.klaxon.Klaxon
+import com.bumptech.glide.Glide
 import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -77,6 +79,7 @@ class WeatherFragment : Fragment() {
             str = z.str
 
         api.Weather.description = ((JSONObject(str).getJSONArray("weather").getJSONObject(0)).get("description")).toString()
+        api.Weather.main_s = ((JSONObject(str).getJSONArray("weather").getJSONObject(0)).get("main")).toString()
         api.Weather.visibility = (JSONObject(str).get("visibility")).toString() + " м"
         api.Weather.main.temp =  (JSONObject(str).getJSONObject("main").get("temp")).toString() + " °c"
         api.Weather.main.feels_like =  (JSONObject(str).getJSONObject("main").get("feels_like")).toString() + " °c"
@@ -106,6 +109,7 @@ class WeatherFragment : Fragment() {
         var speed = v?.findViewById<TextView>(R.id.speed)
         var deg = v?.findViewById<TextView>(R.id.deg)
         var CityText = v?.findViewById<TextView>(R.id.CityText)
+        var imageView = v?.findViewById<ImageView>(R.id.AnimationWeather)
 
         CityText?.text = selectedCity
         description?.text =  api.Weather.description
@@ -118,6 +122,30 @@ class WeatherFragment : Fragment() {
         pressure?.text = api.Weather.main.pressure
         speed?.text = api.Weather.wind.speed
         deg?.text = api.Weather.wind.deg
+
+        when (api.Weather.main_s) {
+            "Thunderstorm" -> {
+                Glide.with(this@WeatherFragment).load(R.drawable.thunder).into(imageView)
+            }
+            "Drizzle" -> {
+                Glide.with(this@WeatherFragment).load(R.drawable.rainy).into(imageView)
+            }
+            "Rain" -> {
+                Glide.with(this@WeatherFragment).load(R.drawable.rainy).into(imageView)
+            }
+            "Snow" -> {
+                Glide.with(this@WeatherFragment).load(R.drawable.snow).into(imageView)
+            }
+            "Clouds" -> {
+                Glide.with(this@WeatherFragment).load(R.drawable.clouds).into(imageView)
+            }
+            "Clear" -> {
+                Glide.with(this@WeatherFragment).load(R.drawable.sunny).into(imageView)
+            }
+            "Fog" -> {
+                Glide.with(this@WeatherFragment).load(R.drawable.fog).into(imageView)
+            }
+        }
 
         // Inflate the layout for this fragment
         return v

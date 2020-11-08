@@ -31,6 +31,7 @@ class API {
 
 class weather {
     var main: main = main()
+    var main_s: String = ""
     var description: String = ""
     var visibility: String = ""
     var wind: wind = wind()
