@@ -1,18 +1,25 @@
 package com.example.weatherpractice
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Environment
+import android.preference.PreferenceManager
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.Fragment
+import com.beust.klaxon.Klaxon
 import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import org.json.JSONObject
+import java.io.File
 import java.io.IOException
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,6 +36,7 @@ class WeatherFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     var api: API = API()
+    var selectedCity: String = "Moscow"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,8 +45,22 @@ class WeatherFragment : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
 
+
+        try {
+            if (File("/storage/emulated/0/Alarms/Cities.txt").exists())
+            {
+                var file = File("/storage/emulated/0/Alarms/selectedCity.txt")
+                selectedCity = File("/storage/emulated/0/Alarms/selectedCity.txt").readText()!!
+            }
+            else selectedCity = "Moscow"
+        }
+        catch (e: IOException) {
+            selectedCity = "Moscow"
+        }
+
         var str: String = ""
-        var City = "Moscow"
+
+        var City = selectedCity
         api.URL = City
         val request = Request.Builder().url(api.URL).build()
 
@@ -83,7 +105,9 @@ class WeatherFragment : Fragment() {
         var pressure = v?.findViewById<TextView>(R.id.pressure)
         var speed = v?.findViewById<TextView>(R.id.speed)
         var deg = v?.findViewById<TextView>(R.id.deg)
+        var CityText = v?.findViewById<TextView>(R.id.CityText)
 
+        CityText?.text = selectedCity
         description?.text =  api.Weather.description
         visibility?.text = api.Weather.visibility
         temp?.text = api.Weather.main.temp

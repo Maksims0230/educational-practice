@@ -18,7 +18,5 @@
     <string name="humidity">Влажность:</string>
     <string name="speed">Скорость:</string>
     <string name="deg">Градус:</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="new_city">Название города</string>
 </resources>

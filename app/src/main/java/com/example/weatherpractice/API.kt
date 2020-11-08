@@ -1,6 +1,7 @@
 package com.example.weatherpractice
 import android.os.Parcelable
 import android.util.Log
+import com.beust.klaxon.Json
 import com.squareup.picasso.BuildConfig.*
 import com.squareup.picasso.Picasso
 import kotlinx.android.parcel.Parcelize
@@ -48,3 +49,14 @@ class wind {
     var speed: String = ""
     var deg: String = ""
 }
+
+
+class Cities (
+    @Json(name = "Cities")
+    var Cities: ArrayList<City>
+)
+
+class City (
+    @Json(name = "City")
+    var City: String
+)

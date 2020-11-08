@@ -1,10 +1,20 @@
 package com.example.weatherpractice
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ListView
+import androidx.fragment.app.Fragment
+import com.beust.klaxon.Klaxon
+import java.io.File
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -21,20 +31,94 @@ class CityFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    var selectedCity: String = "Moscow"
+
+    var cities: Cities = Cities(arrayListOf())
+    var cit: ArrayList<String> = arrayListOf()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
+        //this.assets
+        //var t = context?.let { getAssetJsonData(it) }
+        //var result = Klaxon().parse<Cities>(File( " file:///asset/Cities.json"))
+
+       var cito: Cities = Cities(arrayListOf<City>())
+        var citl = arrayListOf<City>()
+        citl.add(City("Moscow"))
+        citl.add(City("london"))
+        cito = Cities(citl)
+
+        var file: File;
+        if (!File("/storage/emulated/0/Alarms/Cities.txt").exists()) {
+            var path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_ALARMS)
+            file = File(path, "/Cities.txt")
+
+            File("/storage/emulated/0/Alarms/Cities.txt").printWriter().use { out ->
+                out.println(Klaxon().toJsonString(cit))
+            }
+        }
+        else file = File("/storage/emulated/0/Alarms/Cities.txt")
+
+        cities = Klaxon().parse<Cities>(File("/storage/emulated/0/Alarms/Cities.txt"))!!
+
+       /*val fos: FileOutputStream = FileOutputStream("Cities.txt", true)
+        fos.write(Klaxon().toJsonString(cit).toByteArray())
+        fos.close()*/
+
+        var g = ""
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        var v = inflater.inflate(R.layout.fragment_city, container, false)
+        var CitiesList = v?.findViewById<ListView>(R.id.CityList)
+        var AddCityBtn = v?.findViewById<Button>(R.id.AddCityBtn)
+        var NewNameCity = v?.findViewById<EditText>(R.id.NewNameCity)
+
+
+
+        for (t in cities.Cities)
+            cit.add(t.City)
+
+        CitiesList?.adapter = ArrayAdapter<String>(requireActivity(), android.R.layout.simple_list_item_1, cit.sortedBy { x -> x })!!
+
+
+        AddCityBtn?.setOnClickListener {
+            cit.add(NewNameCity?.text.toString())
+
+            cities.Cities.add(City(NewNameCity?.text.toString()))
+
+            File("/storage/emulated/0/Alarms/Cities.txt").printWriter().use { out ->
+                out.println(Klaxon().toJsonString(cities))
+            }
+
+            CitiesList?.adapter = ArrayAdapter<String>(requireActivity(), android.R.layout.simple_list_item_1, cit.sortedBy { x -> x })!!
+        }
+
+        CitiesList?.setOnItemClickListener{ parent, view, position, id ->
+            selectedCity = cities.Cities.sortedBy { x -> x.City }[position].City
+
+            var file: File
+
+            if (!File("/storage/emulated/0/Alarms/SelectedCity.txt").exists()) {
+                var path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_ALARMS)
+                file = File(path, "/SelectedCity.txt")
+            }
+            else file = File("/storage/emulated/0/Alarms/SelectedCity.txt")
+
+            File("/storage/emulated/0/Alarms/SelectedCity.txt").printWriter().use { out ->
+                out.println("$selectedCity")
+            }
+        }
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_city, container, false)
+        return v
     }
 
     companion object {
