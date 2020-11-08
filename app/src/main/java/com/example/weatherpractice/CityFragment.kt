@@ -43,10 +43,6 @@ class CityFragment : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
 
-        //this.assets
-        //var t = context?.let { getAssetJsonData(it) }
-        //var result = Klaxon().parse<Cities>(File( " file:///asset/Cities.json"))
-
        var cito: Cities = Cities(arrayListOf<City>())
         var citl = arrayListOf<City>()
         citl.add(City("Moscow"))
@@ -65,12 +61,6 @@ class CityFragment : Fragment() {
         else file = File("/storage/emulated/0/Alarms/Cities.txt")
 
         cities = Klaxon().parse<Cities>(File("/storage/emulated/0/Alarms/Cities.txt"))!!
-
-       /*val fos: FileOutputStream = FileOutputStream("Cities.txt", true)
-        fos.write(Klaxon().toJsonString(cit).toByteArray())
-        fos.close()*/
-
-        var g = ""
     }
 
     override fun onCreateView(
@@ -82,28 +72,30 @@ class CityFragment : Fragment() {
         var AddCityBtn = v?.findViewById<Button>(R.id.AddCityBtn)
         var NewNameCity = v?.findViewById<EditText>(R.id.NewNameCity)
 
-
-
         for (t in cities.Cities)
             cit.add(t.City)
 
-        CitiesList?.adapter = ArrayAdapter<String>(requireActivity(), android.R.layout.simple_list_item_1, cit.sortedBy { x -> x })!!
-
+        CitiesList?.adapter = ArrayAdapter<String>(requireActivity(), android.R.layout.simple_list_item_1, cit.sortedBy { x -> x.toLowerCase() })!!
 
         AddCityBtn?.setOnClickListener {
-            cit.add(NewNameCity?.text.toString())
+            if (cit.all { x-> x.toLowerCase() != NewNameCity?.text.toString().toLowerCase()  }) {
+                cit.add(NewNameCity?.text.toString())
 
-            cities.Cities.add(City(NewNameCity?.text.toString()))
+                cities.Cities.add(City(NewNameCity?.text.toString()))
 
-            File("/storage/emulated/0/Alarms/Cities.txt").printWriter().use { out ->
-                out.println(Klaxon().toJsonString(cities))
+                File("/storage/emulated/0/Alarms/Cities.txt").printWriter().use { out ->
+                    out.println(Klaxon().toJsonString(cities))
+                }
+
+                CitiesList?.adapter = ArrayAdapter<String>(
+                    requireActivity(),
+                    android.R.layout.simple_list_item_1,
+                    cit.sortedBy { x -> x.toLowerCase() })!!
             }
-
-            CitiesList?.adapter = ArrayAdapter<String>(requireActivity(), android.R.layout.simple_list_item_1, cit.sortedBy { x -> x })!!
         }
 
         CitiesList?.setOnItemClickListener{ parent, view, position, id ->
-            selectedCity = cities.Cities.sortedBy { x -> x.City }[position].City
+            selectedCity = cities.Cities.sortedBy { x -> x.City.toLowerCase() }[position].City
 
             var file: File
 
@@ -117,7 +109,7 @@ class CityFragment : Fragment() {
                 out.println("$selectedCity")
             }
         }
-        // Inflate the layout for this fragment
+
         return v
     }
 

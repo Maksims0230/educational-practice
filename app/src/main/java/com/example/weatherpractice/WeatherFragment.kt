@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -47,7 +48,6 @@ class WeatherFragment : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
 
-
         try {
             if (File("/storage/emulated/0/Alarms/Cities.txt").exists())
             {
@@ -62,7 +62,7 @@ class WeatherFragment : Fragment() {
 
         var str: String = ""
 
-        var City = selectedCity
+        var City = if (selectedCity == "") "Moscow" else selectedCity
         api.URL = City
         val request = Request.Builder().url(api.URL).build()
 
@@ -111,6 +111,11 @@ class WeatherFragment : Fragment() {
         var CityText = v?.findViewById<TextView>(R.id.CityText)
         var imageView = v?.findViewById<ImageView>(R.id.AnimationWeather)
 
+        var updateWeather = v?.findViewById<Button>(R.id.UpdateWeatherBtn)
+        updateWeather?.setOnClickListener {
+            onCreate(Bundle())
+        }
+
         CityText?.text = selectedCity
         description?.text =  api.Weather.description
         visibility?.text = api.Weather.visibility
@@ -146,6 +151,7 @@ class WeatherFragment : Fragment() {
                 Glide.with(this@WeatherFragment).load(R.drawable.fog).into(imageView)
             }
         }
+
 
         // Inflate the layout for this fragment
         return v
