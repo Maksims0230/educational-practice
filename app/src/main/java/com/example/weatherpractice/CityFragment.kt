@@ -91,6 +91,8 @@ class CityFragment : Fragment() {
                     requireActivity(),
                     android.R.layout.simple_list_item_1,
                     cit.sortedBy { x -> x.toLowerCase() })!!
+
+                NewNameCity?.text?.clear()
             }
         }
 
